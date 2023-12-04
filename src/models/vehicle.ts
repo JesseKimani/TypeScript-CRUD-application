@@ -1,5 +1,5 @@
 export interface Vehicle {
-    id: number;
+    id?: number;
     registration: string;
     model: string;
     completed: boolean;

@@ -10,7 +10,8 @@ let vehicles: Vehicle[] = [];
 
 router.post('/', (req:Request, res: Response) => {
     const vehicle: Vehicle = {
-        id: vehicles.length + 1,
+        
+        // id: vehicles.length + 1,
         registration: req.body.registration,
         model: req.body.model,
         completed: false,
