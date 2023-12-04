@@ -1,22 +1,6 @@
-// const mysql = require('mysql');
-import mysql from 'mysql';
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'vehicles',
-    port: 3306,
-});
+import { Sequelize } from 'sequelize';
+import config from '../sequelize.config';
 
+const sequelize = new Sequelize(config.development);
 
-connection.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-    } else {
-        console.log('Connected to MySQL');
-    }
-
-});
-
-
-export default connection;
+export default sequelize;

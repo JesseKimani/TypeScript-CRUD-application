@@ -1,116 +1,96 @@
 import { Router, Request, Response } from 'express';
 import connection  from '../db';
-import { Vehicle } from '../models/vehicle';
+import Vehicle from '../models/vehicle';
 import { error } from 'console';
+
 
 const router = Router();
 let vehicles: Vehicle[] = [];
 
 // CRUD Implementation start
 
-router.post('/', (req:Request, res: Response) => {
-    const vehicle: Vehicle = {
-        
-        // id: vehicles.length + 1,
-        registration: req.body.registration,
-        model: req.body.model,
-        completed: false,
+// Create
+router.post('/', async(req: Request, res: Response) => {
+    try{
+        const newVehicle = await Vehicle.create({
+            registration: req.body.registration,
+            model: req.body.model,
+            completed: req.body.completed || false,
+        });
 
-    };
-
-    // vehicles.push(vehicle);
-    // res.status(201).json(vehicle)
-
-    connection.query('INSERT INTO vehicles SET ?', vehicle, (error, results) => {
-        if (error) {
-            console.error('Error adding vehicle:', error);
-            res.status(500).send('Internal Server Error');
-        } else{
-            vehicle.id = results.insertId;
-            res.status(201).json(vehicle);
-        }
-
-    });
-
+        res.status(201).json(newVehicle);
+    } catch (error) {
+        console.error('Error adding vehicle:', error);
+        res.status(500).send('Internal server error');
+    }
 });
 
 //  Read all vehicles
-router.get('/', (req: Request, res: Response) => {
-    // res.json(vehicles)
-    connection.query('SELECT * FROM vehicles', (error, results: Vehicle[]) => {
-        if (error) {
-            console.error('Error fetching vehicles:', error);
-            res.status(500).send('Internal Server Error');
-        } else {
-            res.json(results);
-        }
-    });
-
+router.get('/', async (req: Request, res: Response) => {
+    try {
+        const vehicles = await Vehicle.findAll();
+        res.json(vehicles);
+    } catch (error) {
+        console.error('Error fetching vehicles:', error);
+        res.status(500).send('Internal server error');
+    }
 });
 
 
 // Read a single vehicle
-router.get('/:id', (req:Request, res: Response) => {
-    // const vehicle = vehicles.find((t) => t.id === parseInt(req.params.id));
-    const vehicleId = req.params.id;
-    connection.query('SELECT * FROM vehicles WHERE id = ?', [vehicleId], (error, results: Vehicle[]) => {
-        if (error) {
-            console.error('Error fetching vehicle:', error);
-            res.status(500).send('Internal Server Error');
-        } else if (results.length === 0) {
-            res.status(404).send('Vehicle not found');
-        } else {
-            res.json(results[0]);
-        }
-
-    });
-
-    // if (!vehicle) {
-    //     res.status(404).send('Vehicle not found');
-    // } else {
-    //     res.json(vehicle); 
-    // }
-    
-});
-
-
-// Update a vehicle
-router.put('/:id', (req: Request, res: Response) => {
-    const vehicleId = req.params.id;
-    const updatedVehicle: Vehicle = {
-        id: parseInt(vehicleId),
-        registration: req.body.registration,
-        model: req.body.model,
-        completed: req.body.completed,
-    };
-
-    connection.query('UPDATE vehicles SET ? WHERE id = ?', [updatedVehicle, vehicleId], (error) => {
-        if (error) {
-            console.error('Error updating vehicle:', error);
-            res.status(500).send('Internal server error');
-        } else {
-            res.json(updatedVehicle);
-        }
-
-    });
-
-});
-
-
-// Delete vehicle
-router.delete('/:id', (req: Request, res: Response) => {
-    const vehicleId = req.params.id;
-    connection.query('DELETE FROM vehicles WHERE id = ?', [vehicleId], (error) => {
-        if (error) {
-            console.error('Error deleting vehicle:', error);
-            res.status(500).send('Internal Server Error');
-        } else {
-            res.status(204).send()
-        }
-    });  
-    
+router.get('/:id', async (req: Request, res: Response) => {
+    try {
+      const vehicle = await Vehicle.findByPk(req.params.id);
+  
+      if (!vehicle) {
+        res.status(404).send('Vehicle not found');
+      } else {
+        res.json(vehicle);
+      }
+    } catch (error) {
+      console.error('Error fetching vehicle:', error);
+      res.status(500).send('Internal Server Error');
+    }
   });
-
+  
+  // Update a vehicle by ID
+  router.put('/:id', async (req: Request, res: Response) => {
+    try {
+      const vehicle = await Vehicle.findByPk(req.params.id);
+  
+      if (!vehicle) {
+        res.status(404).send('Vehicle not found');
+      } else {
+        await vehicle.update({
+          registration: req.body.registration || vehicle.registration,
+          model: req.body.model || vehicle.model,
+          completed: req.body.completed || vehicle.completed,
+        });
+  
+        res.json(vehicle);
+      }
+    } catch (error) {
+      console.error('Error updating vehicle:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  
+  // Delete a vehicle by ID
+  router.delete('/:id', async (req: Request, res: Response) => {
+    try {
+      const vehicle = await Vehicle.findByPk(req.params.id);
+  
+      if (!vehicle) {
+        res.status(404).send('Vehicle not found');
+      } else {
+        await vehicle.destroy();
+        res.status(204).send();
+      }
+    } catch (error) {
+      console.error('Error deleting vehicle:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
 
 
 // CRUD Implementation end
