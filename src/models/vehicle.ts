@@ -40,10 +40,12 @@ Vehicle.init(
     {
         sequelize,
         tableName: 'vehicles',
+        modelName: 'Vehicle',
         timestamps: false,
     }
 
 );
 
+// export { Vehicle };
 export default Vehicle;
 

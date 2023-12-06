@@ -2,13 +2,17 @@ import express , {Request , Response} from 'express';
 import vehicleRoutes from './routes/vehicles';
 import mysql from 'mysql';
 import connection from './db';
+import authRoutes from './routes/auth.routes';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 
-app.use(express.json());
+app.use(express.json()); // Place this middleware before your routes
+
+
 app.use('/vehicles', vehicleRoutes);
+app.use('/auth', authRoutes);
 
 app.get ('/', (req: Request, res: Response) => {
     res.send('Hello, Typescript Express!');
