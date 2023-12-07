@@ -5,47 +5,15 @@ import { error } from 'console';
 import jwt from 'jsonwebtoken';
 
 import { generateToken, comparePasswords, hashPassword } from '../../auth.service';
+import { authenticateToken } from './auth.middleware';
 
 
 const router = Router();
+
+router.use(authenticateToken);
+
 let vehicles: Vehicle[] = [];
 
-
-
-
-
-// router.post('/login', async (req: Request, res: Response) => {
-//     // Authenticate user (check username and password)
-//     const validUser = await comparePasswords(req.body.password, 'FtmsPassword');
-  
-//     if (validUser) {
-//       // Generate authentication token
-//       const token = generateToken({ userId: 1, username: 'Jesse' });
-//       res.json({ token });
-//     } else {
-//       res.status(401).json({ error: 'Invalid credentials' });
-//     }
-//   });
-  
-//   // Other routes requiring authentication
-//   router.get('/', async (req: Request, res: Response) => {
-//     // Check the presence of the authentication token in the request headers
-//     const token = req.headers.authorization?.replace('Bearer ', '');
-    
-//     if (!token) {
-//       return res.status(401).json({ error: 'Unauthorized' });
-//     }
-  
-//     try {
-//       // Verify the token
-//       const decoded = jwt.verify(token, 'Jesse_API_Key');
-//       // If verification is successful, proceed with the route logic
-//       res.json({ message: 'Authenticated route', user: decoded });
-//     } catch (error) {
-//       // If verification fails, send an unauthorized response
-//       res.status(401).json({ error: 'Unauthorized' });
-//     }
-//   });
 
 // CRUD Implementation start
 
