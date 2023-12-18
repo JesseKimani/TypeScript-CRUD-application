@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { User } from '../models/user.model';
-import * as bcrypt from 'bcrypt';
+// import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
 const router = Router();
@@ -17,7 +17,7 @@ router.post('/login', async (req: Request, res: Response) => {
       }
 
     const token = jwt.sign({ userId: user.id }, 'JesseAPIkey', { expiresIn: '1h' });
-    const refreshToken = jwt.sign({ userId: user.id }, 'JesseRefreshToken', { expiresIn: '7d' });
+    const refreshToken = jwt.sign({ userId: user.id }, 'JesseAPIkey', { expiresIn: '7d' });
 
     res.status(200).json({ token, refreshToken });
 
@@ -32,7 +32,7 @@ router.post('/refresh-token', async (req: Request, res: Response) => {
     const { refreshToken } = req.body;
   
     try {
-      const decoded = jwt.verify(refreshToken, 'RefreshTokenSecret');
+      const decoded = jwt.verify(refreshToken, 'JesseAPIkey');
       const user = await User.findByPk(decoded.userId);
   
       if (!user) {

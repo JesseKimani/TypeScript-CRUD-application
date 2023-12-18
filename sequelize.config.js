@@ -1,10 +1,10 @@
 module.exports = {
     development: {
-        username: 'root',
-        password: '',
-        database: 'vehicles',
+        username: 'postgres',
+        password: 'Javada99',
+        database: 'vehiclesdb',
         host: 'localhost',
-        dialect: 'mysql',
+        dialect: 'postgres',
     },
     
 };

@@ -10,7 +10,7 @@
         <input type="text" id="model" v-model="newVehicle.model" required />
 
         <label for="completed">Completed: </label>
-        <input type="checkbox" id="completed" v-model="newVehicle.completed" required>
+        <input type="checkbox" id="completed" v-model="newVehicle.completed">
 
         <button type="submit">Add Vehicle</button>
       </form>
@@ -49,38 +49,50 @@ export default {
       axios.get("http://localhost:3000/vehicles", {
 
         headers: {
-          Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjMwMjk2NiwiZXhwIjoxNzAyMzA2NTY2fQ.zXyS_S9NpIJzQjD7JOcswzN_MGOX3gODeF8bceNqicU`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjg4NDQ5OSwiZXhwIjoxNzAyODg4MDk5fQ.29gWV1DDMqj_e7WyjQ06I96uwuRy0g15u0rgvgpv44s`,
         },
         }).then((response) => {
           this.vehicles = response.data;
         }).catch((error) => {
           console.error("Error fetching vehicles:", error);
         });
-
-    //   axios.get("http://localhost:3000/vehicles").then((response) => {
-    //     this.vehicles = response.data;
-    //   });
     },
 
-    
-
-
-
-    addVehicle() {
-      axios.post("http://localhost:3000/vehicles", this.newVehicle).then(() => {
+  addVehicle() {
+    console.log("Adding vehicle...");
+    axios.post("http://localhost:3000/vehicles", this.newVehicle , {
+      headers: {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjg4NDQ5OSwiZXhwIjoxNzAyODg4MDk5fQ.29gWV1DDMqj_e7WyjQ06I96uwuRy0g15u0rgvgpv44s`,
+        },
+    })
+      .then(() => {
         this.fetchVehicles();
         this.newVehicle = { registration: "", model: "", completed: "" };
-       });
+      })
+      .catch((error) => {
+        console.error("Error adding vehicle:", error);
+      });
     },
 
-    // deleteVehicle(vehicleId) {
-    //   axios.delete("http://localhost:3000/vehicles/${vehicleId}").then(() => {
-    //     this.fetchVehicles();
-    //   });
-    // },
+    deleteVehicle(vehicleId) {
+      axios.delete(`http://localhost:3000/vehicles/${vehicleId}`, {
+        headers: {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjg4NDQ5OSwiZXhwIjoxNzAyODg4MDk5fQ.29gWV1DDMqj_e7WyjQ06I96uwuRy0g15u0rgvgpv44s`,
+        },
+      })
+        .then(() => {
+          this.fetchVehicles();
+        })
+        .catch((error) => {
+          console.error(`Error deleting vehicle with ID ${vehicleId}:`, error);
+        });
+    },
   },
-
 };
+
+
+
+    
 
 </script>
 
