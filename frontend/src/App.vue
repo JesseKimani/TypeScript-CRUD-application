@@ -21,6 +21,7 @@
         <li v-for="vehicle in vehicles" :key="vehicle.id">
           {{ vehicle.registration }} - {{ vehicle.model }}
           <button @click="deleteVehicle(vehicle.id)">Delete</button>
+          <button @click="updateVehicle(vehicle.id)">Update</button>
         </li>
         
       </ul>
@@ -30,8 +31,11 @@
 </template>
 
 <script>
+
+
 import axios from 'axios';
-// import { response } from 'express';
+import { API_ENDPOINT, API_TOKEN } from './config';
+
 export default {
   data() {
     return {
@@ -49,7 +53,7 @@ export default {
       axios.get("http://localhost:3000/vehicles", {
 
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjg4NDQ5OSwiZXhwIjoxNzAyODg4MDk5fQ.29gWV1DDMqj_e7WyjQ06I96uwuRy0g15u0rgvgpv44s`,
+          Authorization: `Bearer ${API_TOKEN}`,
         },
         }).then((response) => {
           this.vehicles = response.data;
@@ -60,9 +64,9 @@ export default {
 
   addVehicle() {
     console.log("Adding vehicle...");
-    axios.post("http://localhost:3000/vehicles", this.newVehicle , {
+    axios.post('http://localhost:3000/vehicles', this.newVehicle , {
       headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjg4NDQ5OSwiZXhwIjoxNzAyODg4MDk5fQ.29gWV1DDMqj_e7WyjQ06I96uwuRy0g15u0rgvgpv44s`,
+          Authorization: `Bearer ${API_TOKEN}`,
         },
     })
       .then(() => {
@@ -75,9 +79,9 @@ export default {
     },
 
     deleteVehicle(vehicleId) {
-      axios.delete(`http://localhost:3000/vehicles/${vehicleId}`, {
+      axios.delete(`${API_ENDPOINT}/vehicles/${vehicleId}`, {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjg4NDQ5OSwiZXhwIjoxNzAyODg4MDk5fQ.29gWV1DDMqj_e7WyjQ06I96uwuRy0g15u0rgvgpv44s`,
+          Authorization: `Bearer ${API_TOKEN}`,
         },
       })
         .then(() => {
@@ -87,12 +91,40 @@ export default {
           console.error(`Error deleting vehicle with ID ${vehicleId}:`, error);
         });
     },
+
+    async updateVehicle(vehicleId) {
+      try {
+        const vehicleToUpdate = this.vehicles.find((vehicle) => vehicle.id === vehicleId);
+        const response = await axios.put(`${API_ENDPOINT}/vehicles/${vehicleId}`, this.newVehicle, {
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+          },
+        });
+
+        const updatedVehicleData = response.data;
+
+        if (vehicleToUpdate !== -1) {
+          this.vehicles[vehicleToUpdate] = updatedVehicleData;
+          console.log('Updated vehicle data: ', updatedVehicleData);
+        } else{
+          console.error(`Vehicle with ID ${vehicleId} not found`);
+        }
+
+        const updatedVehicles = this.vehicles.map((vehicle) => 
+          vehicle.id === vehicleId ? updatedVehicleData : vehicle
+        );
+
+        this.vehicles = updatedVehicles;
+
+
+      } catch (error) {
+        console.error(`Error updating vehicle with ID ${vehicleId}:`, error);
+        
+      }
+
+    },
   },
 };
-
-
-
-    
 
 </script>
 

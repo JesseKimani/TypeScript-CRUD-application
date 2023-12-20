@@ -1,10 +1,5 @@
 import { Router, Request, Response } from 'express';
-import connection  from '../db';
 import Vehicle from '../models/vehicle';
-import { error } from 'console';
-import jwt from 'jsonwebtoken';
-
-import { generateToken, comparePasswords, hashPassword } from '../auth.service';
 import { authenticateToken } from './auth.middleware';
 
 
