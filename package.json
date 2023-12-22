@@ -32,6 +32,7 @@
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.35.1",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "vue-router": "^4.2.5"
   }
 }

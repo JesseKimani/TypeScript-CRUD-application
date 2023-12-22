@@ -1,2 +1,6 @@
 export const API_ENDPOINT = 'http://localhost:3000';
-export const API_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwMjk3OTgxNCwiZXhwIjoxNzAyOTgzNDE0fQ.Z7V469quffj3LNJhahLxSsmtStoBbN910DDq4-GuU9s';
+export const API_TOKEN = localStorage.getItem('token');
+console.log('Access Token: ', API_TOKEN);
+
+export const refToken = localStorage.getItem('refreshToken');
+console.log('Refresh Token: ', refToken);

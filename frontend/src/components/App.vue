@@ -34,7 +34,7 @@
 
 
 import axios from 'axios';
-import { API_ENDPOINT, API_TOKEN } from './config';
+import { API_ENDPOINT, API_TOKEN } from '@/config';
 
 export default {
   data() {
